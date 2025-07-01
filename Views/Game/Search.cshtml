@@ -1,0 +1,116 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@model List<MyGameList.Models.Dto.RawgGameDto>
+
+@{
+    ViewData["Title"] = "Search Games";
+    var hasResults = Model != null && Model.Count > 0;
+}
+
+<div class="search-page @(hasResults ? "compact" : "")">
+
+    <section class="hero-section text-center">
+        @if (!hasResults)
+        {
+            <h1 class="display-3 fw-bold mb-3">MyGameList</h1>
+            <p class="lead mb-4">Search for a game</p>
+        }
+
+        <form asp-action="SearchPost" method="post" class="search-form w-75 w-md-50 mx-auto">
+            @Html.AntiForgeryToken()
+            <div class="input-group @(hasResults ? "mt-3 mb-4" : "mb-4")">
+                <input type="text" name="query" value="@ViewBag.Query" class="form-control form-control-lg" placeholder="Enter game name..." />
+                <button class="btn btn-primary btn-lg" type="submit">Search</button>
+            </div>
+        </form>
+
+        @if (!string.IsNullOrEmpty(ViewBag.Error as string))
+        {
+            <div class="alert alert-danger mt-2">@ViewBag.Error</div>
+        }
+    </section>
+
+    @if (hasResults)
+    {
+        <div class="row mt-5">
+            @foreach (var game in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card game-card h-100 shadow-sm">
+                        <img src="@game.Background_Image" class="card-img-top" alt="@game.Name" />
+                        <div class="card-body">
+                            <h5 class="card-title">@game.Name</h5>
+                            <p class="card-text text-muted">Released: @(game.Released?.ToString("yyyy-MM-dd") ?? "Unknown")</p>
+
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                <form asp-controller="Game" asp-action="AddToList" method="post">
+                                    <input type="hidden" name="id" value="@game.Id" />
+                                    <input type="hidden" name="title" value="@game.Name" />
+                                    <input type="hidden" name="coverImageUrl" value="@game.Background_Image" />
+                                    <input type="hidden" name="releaseDate" value="@game.Released?.ToString("o")" />
+                                    <input type="hidden" name="returnUrl" value="@Url.Action("Search", "Game", new { query = ViewBag.Query })" />
+                                    <div class="input-group mt-2">
+                                        <select class="form-select" name="status" required>
+                                            <option value="">Choose List...</option>
+                                            <option value="Backlog">Backlog</option>
+                                            <option value="Playing">Playing</option>
+                                            <option value="Completed">Completed</option>
+                                            <option value="Wishlist">Wishlist</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-success">Add</button>
+                                    </div>
+                                </form>
+                            }
+                            else
+                            {
+                                <a class="btn btn-outline-primary mt-2"
+                                   href="@Url.Page("/Account/Login", new {
+                                       area = "Identity",
+                                       returnUrl = Url.Action("Search", "Game", new { query = ViewBag.Query })
+                                   })">
+                                    Log in to Add
+                                </a>
+                            }
+
+                            <a class="btn btn-outline-info mt-2"
+                               asp-controller="Game"
+                               asp-action="Details"
+                               asp-route-id="@game.Id">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+
+@section Scripts {
+    <script>
+        $(document).on('submit', '.add-to-list-form', function (e) {
+            e.preventDefault();
+            const form = $(this);
+            const formData = form.serialize();
+
+            $.ajax({
+                url: form.attr('action'),
+                type: form.attr('method'),
+                data: formData,
+                success: function () {
+                    // You can show a better message here (toast or alert)
+                    const alert = $('<div class="alert alert-success game-alert">Game added to your list!</div>');
+                    $('body').append(alert);
+                    setTimeout(() => alert.fadeOut(500, () => alert.remove()), 2000);
+                },
+                error: function () {
+                    const alert = $('<div class="alert alert-danger game-alert">Failed to add game.</div>');
+                    $('body').append(alert);
+                    setTimeout(() => alert.fadeOut(500, () => alert.remove()), 2000);
+                }
+            });
+        });
+    </script>
+}

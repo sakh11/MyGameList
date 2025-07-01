@@ -1,0 +1,55 @@
+﻿@model MyGameList.Models.ViewModels.EditProfileViewModel
+
+@{
+    ViewData["Title"] = "Account Settings";
+}
+
+<h2 class="mb-4">Account Settings</h2>
+
+<div id="profile-section">
+    @await Html.PartialAsync("_ProfileInfoPartial", Model)
+</div>
+
+<hr class="my-5" />
+
+<div id="profile-section">
+    @await Html.PartialAsync("_UploadImagesPartial", Model)
+</div>
+
+<hr class="my-5" />
+
+<div id="password-section">
+    @await Html.PartialAsync("_ChangePasswordPartial", new MyGameList.Models.ViewModels.ChangePasswordViewModel())
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $('#profile-section').on('submit', 'form', function (e) {
+                e.preventDefault();
+                const form = $(this);
+                $.ajax({
+                    url: form.attr('action'),
+                    type: form.attr('method'),
+                    data: form.serialize(),
+                    success: function (partial) {
+                        $('#profile-section').html(partial);
+                    }
+                });
+            });
+
+            $('#password-section').on('submit', 'form', function (e) {
+                e.preventDefault();
+                const form = $(this);
+                $.ajax({
+                    url: form.attr('action'),
+                    type: form.attr('method'),
+                    data: form.serialize(),
+                    success: function (partial) {
+                        $('#password-section').html(partial);
+                    }
+                });
+            });
+        });
+    </script>
+}

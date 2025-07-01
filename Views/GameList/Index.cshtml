@@ -1,0 +1,109 @@
+﻿@model List<MyGameList.Models.UserGameList>
+
+@{
+    ViewData["Title"] = "My Game List";
+    var genres = ViewBag.Genres as List<MyGameList.Models.Genre> ?? new List<MyGameList.Models.Genre>();
+}
+
+<h2 class="mb-4">My Game List</h2>
+
+<div class="mb-4 row g-2 align-items-end">
+    <div class="col-md-3">
+        <label for="filterName" class="form-label">Game Name</label>
+        <input type="text" id="filterName" placeholder="Enter name..." class="form-control" />
+    </div>
+    <div class="col-md-2">
+        <label for="filterYear" class="form-label">Year</label>
+        <input type="number" id="filterYear" placeholder="e.g. 2022" class="form-control" />
+    </div>
+    <div class="col-md-3">
+        <label for="genreFilter" class="form-label">Genre</label>
+        <select id="genreFilter" class="form-select">
+            <option value="">All Genres</option>
+            @foreach (var genre in genres)
+            {
+                <option value="@genre.Id">@genre.Name</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <label for="sortBy" class="form-label">Sort By</label>
+        <select id="sortBy" class="form-select">
+            <option value="">None</option>
+            <option value="title">Title (A-Z)</option>
+            <option value="date">Release Date (Newest)</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button class="btn btn-primary w-100" id="applyFilter">Apply</button>
+    </div>
+</div>
+
+<hr />
+
+<div id="backlog" class="mb-5"></div>
+<div id="playing" class="mb-5"></div>
+<div id="completed" class="mb-5"></div>
+<div id="wishlist" class="mb-5"></div>
+
+@section Scripts {
+    <script>
+        function loadSection(section, filters = {}) {
+            $.get('/GameList/Section', { status: section, ...filters }, function (html) {
+                $('#' + section.toLowerCase()).fadeOut(100, function () {
+                    $(this).html(html).fadeIn(150);
+                });
+            });
+        }
+
+        function loadAll(filters = {}) {
+            loadSection("Backlog", filters);
+            loadSection("Playing", filters);
+            loadSection("Completed", filters);
+            loadSection("Wishlist", filters);
+        }
+
+        $(document).ready(function () {
+            loadAll();
+
+            $('#applyFilter').click(function () {
+                const filters = {
+                    name: $('#filterName').val(),
+                    year: $('#filterYear').val(),
+                    sort: $('#sortBy').val(),
+                    genreId: $('#genreFilter').val()
+                };
+                loadAll(filters);
+            });
+
+            $(document).on('submit', '.remove-form', function (e) {
+                e.preventDefault();
+                const form = $(this);
+                $.post(form.attr('action'), form.serialize(), function () {
+                    const filters = {
+                        name: $('#filterName').val(),
+                        year: $('#filterYear').val(),
+                        sort: $('#sortBy').val(),
+                        genreId: $('#genreFilter').val()
+                    };
+                    loadAll(filters);
+                });
+            });
+        });
+
+        $(document).on('change', '.update-status-form select', function () {
+            const form = $(this).closest('form');
+            $.post(form.attr('action'), form.serialize(), function () {
+                const filters = {
+                    name: $('#filterName').val(),
+                    year: $('#filterYear').val(),
+                    sort: $('#sortBy').val(),
+                    genreId: $('#genreFilter').val()
+                };
+                loadAll(filters); // refresh all lists after move
+            });
+        });
+
+
+    </script>
+}

@@ -1,0 +1,29 @@
+﻿@model MyGameList.Models.ViewModels.EditProfileViewModel
+
+<div class="card">
+    <div class="card-header">Edit Profile</div>
+    <div class="card-body">
+        <form id="profile-info-form" asp-action="UpdateProfileInfo" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="mb-3">
+                <label asp-for="DisplayName" class="form-label"></label>
+                <input asp-for="DisplayName" class="form-control" />
+                <span asp-validation-for="DisplayName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            @if (ViewData["ProfileUpdateSuccess"] != null)
+            {
+                <div class="alert alert-success">@ViewData["ProfileUpdateSuccess"]</div>
+            }
+
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+</div>

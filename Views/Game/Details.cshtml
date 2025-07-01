@@ -1,0 +1,118 @@
+﻿@model MyGameList.Models.Dto.RawgGameDetailsDto
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="game-alert alert alert-success alert-dismissible fade show" role="alert" id="success-alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="banner-container" style="background-image: url('@Model.BackgroundImage');"></div>
+
+
+<div class="game-info-container">
+    <img src="@(Model.BackgroundImageAdditional ?? Model.BackgroundImage)" alt="@Model.Name Poster" class="poster" />
+
+    <div class="game-meta">
+        <h1>@Model.Name</h1>
+        <form asp-action="AddToList" method="post" class="add-to-list-form mt-4">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.Id" />
+            <input type="hidden" name="title" value="@Model.Name" />
+            <input type="hidden" name="coverImageUrl" value="@Model.BackgroundImage" />
+            <input type="hidden" name="releaseDate" value="@Model.Released?.ToString("yyyy-MM-dd")" />
+            <input type="hidden" name="returnUrl" value="@Url.Action("Details", "Game", new { id = Model.Id })" />
+
+            <label for="status" class="form-label">Add to List:</label>
+            <div class="d-flex gap-2">
+                <select class="form-select" name="status" required>
+                    <option value="">Select...</option>
+                    <option value="Backlog">Backlog</option>
+                    <option value="Playing">Playing</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Wishlist">Wishlist</option>
+                </select>
+                <button type="submit" class="btn btn-primary">Add</button>
+            </div>
+        </form>
+
+        @if (Model.Released.HasValue)
+        {
+            <p><strong>Release Date:</strong> @Model.Released.Value.ToString("yyyy-MM-dd")</p>
+        }
+
+        @if (Model.Rating.HasValue)
+        {
+            <p><strong>Rating:</strong> @Model.Rating.Value.ToString("0.0")</p>
+        }
+
+        @if (Model.Genres.Any())
+        {
+            <p>
+                <strong>Genres:</strong>
+                @foreach (var genre in Model.Genres)
+                {
+                    <span class="badge bg-primary me-1">@genre</span>
+                }
+            </p>
+        }
+
+        @if (Model.Platforms.Any())
+        {
+            <p><strong>Platforms:</strong> @string.Join(", ", Model.Platforms)</p>
+        }
+    </div>
+</div>
+
+<div class="game-description">
+    <hr />
+    <h3>Description</h3>
+    <p>@Model.DescriptionRaw</p>
+</div>
+
+@if (ViewBag.Trailers is List<string> trailers && trailers.Any())
+{
+    <div class="game-trailers mt-5">
+        <h3>Trailers</h3>
+        <div class="d-flex flex-wrap gap-3">
+            @foreach (var url in trailers)
+            {
+                <video width="480" controls class="rounded shadow">
+                    <source src="@url" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            }
+        </div>
+    </div>
+}
+
+@if (ViewBag.Screenshots is List<string> screenshots && screenshots.Any())
+{
+    <div class="screenshot-carousel-container mt-4">
+        <h3>Screenshots</h3>
+        <div class="screenshot-carousel">
+            @foreach (var url in screenshots)
+            {
+                <div class="screenshot-slide">
+                    <img src="@url" alt="Screenshot" />
+                </div>
+            }
+        </div>
+    </div>
+}
+
+
+<script>
+    setTimeout(function () {
+        const alertBox = document.getElementById('success-alert');
+        if (alertBox) {
+            const alert = bootstrap.Alert.getOrCreateInstance(alertBox);
+            alert.close();
+        }
+    }, 4000);
+</script>
+

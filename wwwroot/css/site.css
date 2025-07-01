@@ -1,0 +1,245 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.alert {
+    transition: opacity 0.5s ease-out;
+}
+
+/* Buttons */
+.btn-success {
+    font-weight: bold;
+    padding: 0.75rem 1.5rem;
+}
+/* /Buttons */
+
+/* Posters and banners */
+.poster {
+    width: 250px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    flex-shrink: 0;
+}
+
+.banner-container {
+    background-size: cover;
+    background-position: center;
+    height: 400px;
+    position: relative;
+}
+/* /Posters and banners */
+
+/* Game Search Page */
+.search-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.hero-section {
+    padding: 4rem 1rem;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.search-page.compact .hero-section {
+    padding: 1rem 1rem;
+}
+
+.search-page.compact .hero-section h1,
+.search-page.compact .hero-section p {
+    display: none;
+}
+
+.search-form {
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.search-form .form-control {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.search-page:not(.compact) .hero-section {
+    min-height: calc(100vh - 120px); /* Adjust for navbar/footer height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.card.game-card {
+    width: 100%;
+    max-width: 320px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.2s ease-in-out;
+}
+
+    .card.game-card:hover {
+        transform: scale(1.02);
+    }
+
+    .card.game-card .card-img-top {
+        height: 180px;
+        object-fit: cover;
+    }
+
+    .card.game-card .card-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+/* /Game Search Page */
+
+
+/* Game Info Page */
+.game-info-container {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+    margin-top: -150px; /* pull content up over banner */
+    position: relative;
+    z-index: 2;
+}
+
+.game-meta {
+    flex: 1;
+}
+
+    .game-meta h1 {
+        margin-top: 0;
+    }
+
+.game-description {
+    padding: 2rem;
+    padding-top: 1rem;
+    white-space: pre-line;
+}
+
+.game-alert {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1055; /* higher than other elements, especially if using Bootstrap modals/toasts */
+    width: auto;
+    max-width: 90%;
+    min-width: 300px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+.screenshot-carousel-container {
+    margin-top: 2rem;
+}
+
+.screenshot-carousel {
+    display: flex;
+    overflow-x: auto;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+}
+
+.screenshot-slide {
+    flex: 0 0 auto;
+    width: 300px;
+    scroll-snap-align: start;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+    .screenshot-slide img {
+        width: 100%;
+        height: auto;
+        display: block;
+        border-radius: 4px;
+    }
+}
+
+.game-trailers video {
+    max-width: 100%;
+    height: auto;
+}
+/* /Game Info Page */
+
+/* Profile Page */
+.profile-banner {
+    height: 300px;
+    background: center/cover no-repeat;
+    overflow: hidden;
+    width: 100%;
+}
+
+.profile-info-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 2rem;
+    padding: 2rem;
+    margin-top: -60px;
+    position: relative;
+    z-index: 2;
+}
+
+.profile-avatar img.avatar-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background-color: #343a40;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    font-weight: bold;
+    box-shadow: 0 0 8px rgba(0,0,0,0.2);
+}
+
+.profile-meta h1 {
+    margin-bottom: 0.25rem;
+}
+
+.bio {
+    margin-top: 0.5rem;
+    font-style: italic;
+}
+/* /Profile Page */
+
+/* Game List Page */
+.poster-thumb {
+    width: 80px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* /Game List Page */

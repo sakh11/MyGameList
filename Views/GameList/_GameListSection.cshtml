@@ -1,0 +1,69 @@
+﻿@model List<MyGameList.Models.UserGameList>
+@{
+    var sectionTitle = ViewData["SectionTitle"] as string ?? "Games";
+}
+
+
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">@sectionTitle</h4>
+    </div>
+    <div class="card-body">
+
+        @if (!Model.Any())
+        {
+            <p>No games found.</p>
+        }
+        else
+        {
+            <ul class="list-group">
+                @foreach (var item in Model)
+                {
+                    <li class="list-group-item d-flex align-items-center">
+                        <!-- Poster thumbnail -->
+                        <img src="@item.Game.CoverImageUrl"
+                             alt="@item.Game.Title"
+                             class="me-3 poster-thumb" />
+
+                        <!-- Game Info and Actions -->
+                        <div class="flex-grow-1 d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>@item.Game.Title</strong><br />
+                                <a asp-controller="Game" asp-action="Details" asp-route-id="@item.GameId">View Details</a><br />
+                                <small>Released: @item.Game.ReleaseDate?.ToString("yyyy")</small>
+
+                                @if (item.Game.GameGenres?.Any() == true)
+                                {
+                                    <div class="mt-1">
+                                        <small>
+                                            Genres:
+                                            @string.Join(", ", item.Game.GameGenres.Select(gg => gg.Genre.Name))
+                                        </small>
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="text-end">
+                                <form asp-controller="GameList" asp-action="Remove" method="post" class="ms-2">
+                                    <input type="hidden" name="gameId" value="@item.GameId" />
+                                    <button class="btn btn-sm btn-danger">Remove</button>
+                                </form>
+
+                                <form asp-action="UpdateStatus" asp-controller="GameList" method="post" class="update-status-form">
+                                    <input type="hidden" name="gameId" value="@item.GameId" />
+                                    <select name="newStatus" class="form-select form-select-sm mt-2">
+                                        <option disabled selected>Move to...</option>
+                                        <option value="Backlog">Backlog</option>
+                                        <option value="Playing">Playing</option>
+                                        <option value="Completed">Completed</option>
+                                        <option value="Wishlist">Wishlist</option>
+                                    </select>
+                                </form>
+                            </div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+</div>
